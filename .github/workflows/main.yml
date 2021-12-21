@@ -43,12 +43,12 @@ jobs:
           }'
           echo $jsonBody > buildinformation.json
           echo "======================="
-      - name: "Create ${{ matrix.octopus-project }} Octopus Release"
+      - name: "Create ${{ matrix.octopus-project }} Octopus Release First"
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            build-information --package-id="${env:PACKAGE_NAME}" --file="buildinformation.json" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey="${env:OCTOPUS_API_KEY}" --space="${env:OCTOPUS_SPACE_NAME}"
-      - name: "Create ${{ matrix.octopus-project }} Octopus Release"
+            build-information --package-id="${env:PACKAGE_NAME}" --file="buildinformation.json" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="${env:OCTOPUS_SPACE_NAME}"
+      - name: "Create ${{ matrix.octopus-project }} Octopus Release Second"
         uses: docker://octopusdeploy/octo
         with:
           args: >
