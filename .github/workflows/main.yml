@@ -5,25 +5,6 @@ on:
     branches:
       - master
 jobs:
-  create-gh-release:
-    name: "Create Release"
-    runs-on: ubuntu-latest
-    outputs:
-      release-url: ${{ steps.create_release.outputs.html_url}}
-      release-number: ${{ steps.release-number.outputs.release-number}}
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@master
-      - name: "Create GitHub Release"
-        id: create_release
-        uses: actions/create-release@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}qweqaaawd
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
   create-octopus-release:
     name: "Create Octopus Release"
     runs-on: ubuntu-latest
@@ -68,23 +49,9 @@ jobs:
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            build-information --package-id="${env:PACKAGE_NAME}" \
-              --file="buildinformation.json" \
-              --server="${env:OCTOPUS_URL}" \
-              --apiKey="${env:OCTOPUS_API_KEY}" \
-              --space="${env:OCTOPUS_SPACE_NAME}"
+            build-information --package-id="${env:PACKAGE_NAME}" --file="buildinformation.json" --server="${env:OCTOPUS_URL}" --apiKey="${env:OCTOPUS_API_KEY}" --space="${env:OCTOPUS_SPACE_NAME}"
       - name: "Create ${{ matrix.octopus-project }} Octopus Release"
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            octo create-release \
-              --project="${env:OCTOPUS_PROJECT_NAME}" \
-              --packageVersion="${env:PACKAGE_VERSION}" \
-              --releaseNumber="${env:PACKAGE_VERSION}" \
-              --server="${env:OCTOPUS_URL}" \
-              --apiKey="${env:OCTOPUS_API_KEY}" \
-              --space="${env:OCTOPUS_SPACE_NAME}" \
-              --deployTo="${env:ENVIRONMENT_NAME}" \
-              --channel="${env:CHANNEL_NAME}" \
-              --variable="Feature Branch Name:${env:BRANCH_NAME}" \
-              --variable="Merged Branch Name:${env:MERGED_BRANCH}"
+            octo create-release --project="${env:OCTOPUS_PROJECT_NAME}" --packageVersion="${env:PACKAGE_VERSION}"  --releaseNumber="${env:PACKAGE_VERSION}" --server="${env:OCTOPUS_URL}" --apiKey="${env:OCTOPUS_API_KEY}" --space="${env:OCTOPUS_SPACE_NAME}" --deployTo="${env:ENVIRONMENT_NAME}" --channel="${env:CHANNEL_NAME}" --variable="Feature Branch Name:${env:BRANCH_NAME}" --variable="Merged Branch Name:${env:MERGED_BRANCH}"
