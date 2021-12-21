@@ -47,7 +47,7 @@ jobs:
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            build-information --package-id="${env:PACKAGE_NAME}" --file="buildinformation.json" --version="14.41" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
+            build-information --package-id="15121" --file="buildinformation.json" --version="144124" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
       - name: "Create ${{ matrix.octopus-project }} Octopus Release Second"
         uses: docker://octopusdeploy/octo
         with:
