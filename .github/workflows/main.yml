@@ -35,14 +35,41 @@ jobs:
           - "Project2"
           - "Project3"
     steps:
-      - name: "Create ${{ matrix.octopus-project }} Octopus Release"
+      # - name: "Create ${{ matrix.octopus-project }} Octopus Release"
+      #   uses: docker://octopusdeploy/octo
+      #   with:
+      #     args: >
+      #       create-release
+      #       --server ${{ secrets.OCTOPUS_SERVER }}
+      #       --project "${{ matrix.octopus-project }}"
+      #       --version ${{ needs.create-gh-release.outputs.release-number }}
+      #       --channel Default
+      #       --apikey ${{ secrets.OCTOPUS_API_KEY }}
+      #       --releasenotes "[View release in GitHub](${{ needs.create-gh-release.outputs.release-url }})"
+      - name: Octopus Deploy
+        env:
+          OCTOPUS_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
+          OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         uses: docker://octopusdeploy/octo
-        with:
-          args: >
-            create-release
-            --server ${{ secrets.OCTOPUS_SERVER }}
-            --project "${{ matrix.octopus-project }}"
-            --version ${{ needs.create-gh-release.outputs.release-number }}
-            --channel Default
-            --apikey ${{ secrets.OCTOPUS_API_KEY }}
-            --releasenotes "[View release in GitHub](${{ needs.create-gh-release.outputs.release-url }})"
+        run: |
+          commitMessage = git log -1 --pretty=oneline
+          commitMessage = $commitMessage -replace "${env:GITHUB_SHA} ", ""
+          jsonBody = {
+            BuildEnvironment = "GitHub Actions"
+            Branch = "${env:BRANCH_NAME}"
+            BuildNumber = "${env:GITHUB_RUN_NUMBER}"
+            BuildUrl = "https://github.com/${env:GITHUB_REPOSITORY}/actions/runs/${env:GITHUB_RUN_ID}"
+            VcsCommitNumber = "${env:GITHUB_SHA}"
+            VcsType = "Git"
+            VcsRoot = "https://github.com/${env:GITHUB_REPOSITORY}.git"
+            Commits = (
+              {
+                Id = "${env:GITHUB_SHA}"
+                LinkUrl = "https://github.com/${env:GITHUB_REPOSITORY}/commit/${env:GITHUB_SHA}"
+                Comment = "$commitMessage"
+              }
+            )
+          } | ConvertTo-Json -Depth 10
+          echo $jsonBody > buildinformation.json
+          octo build-information --package-id="${env:PACKAGE_NAME}" --file="buildinformation.json" --version="${env:PACKAGE_VERSION}" --server="${env:OCTOPUS_URL}" --apiKey="${env:OCTOPUS_API_KEY}" --space="${env:OCTOPUS_SPACE_NAME}"
+          octo create-release --project="${env:OCTOPUS_PROJECT_NAME}" --packageVersion="${env:PACKAGE_VERSION}" --releaseNumber="${env:PACKAGE_VERSION}" --server="${env:OCTOPUS_URL}" --apiKey="${env:OCTOPUS_API_KEY}" --space="${env:OCTOPUS_SPACE_NAME}" --deployTo="${env:ENVIRONMENT_NAME}" --channel="${env:CHANNEL_NAME}" --variable="Feature Branch Name:${env:BRANCH_NAME}" --variable="Merged Branch Name:${env:MERGED_BRANCH}"
