@@ -20,7 +20,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}qw
+          tag_name: ${{ github.ref }}qwe
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
@@ -62,7 +62,6 @@ jobs:
             )
           }
           echo $jsonBody > buildinformation.json
-          echo $jsonBody
           echo "======================="
           octo build-information --package-id="${env:PACKAGE_NAME}" \
             --file="buildinformation.json" \
