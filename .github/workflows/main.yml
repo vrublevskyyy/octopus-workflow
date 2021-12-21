@@ -42,12 +42,13 @@ jobs:
             )
           }'
           echo $jsonBody > buildinformation.json
+          readlink -f buildinformation.json
           echo "======================="
       - name: "Create ${{ matrix.octopus-project }} Octopus Release First"
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            build-information --package-id="hello-world.1.0.0.zip" --version="hello-world.1.0.0.zip" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
+            build-information --package-id="hello-world.1.0.0.zip" --file="buildinformation.json" --version="hello-world.1.0.0.zip" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
       - name: "Create ${{ matrix.octopus-project }} Octopus Release Second"
         uses: docker://octopusdeploy/octo
         with:
