@@ -41,7 +41,7 @@ jobs:
               }
             )
           }'
-          echo $jsonBody > buildinformation.json
+          echo $jsonBody > hello-world.1.0.0.zip.json
           readlink -f buildinformation.json
           echo "======================="
       - name: "Create ${{ matrix.octopus-project }} Octopus Release First"
