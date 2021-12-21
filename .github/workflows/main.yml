@@ -43,7 +43,6 @@ jobs:
           OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
       - run: |
           commitMessage=$(git log -1 --pretty=oneline)
-          commitMessage=$($commitMessage -replace "${env:GITHUB_SHA} ", "")
           jsonBody = {
             BuildEnvironment = "GitHub Actions"
             Branch = "${env:BRANCH_NAME}"
