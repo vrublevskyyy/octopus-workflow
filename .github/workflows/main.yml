@@ -20,7 +20,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}qweq
+          tag_name: ${{ github.ref }}qweqa
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
@@ -64,12 +64,20 @@ jobs:
           }'
           echo $jsonBody > buildinformation.json
           echo "======================="
-          octo build-information --package-id="${env:PACKAGE_NAME}" \
+      - name: "Create ${{ matrix.octopus-project }} Octopus Release"
+        uses: docker://octopusdeploy/octo
+        with:
+          args: >
+            build-information --package-id="${env:PACKAGE_NAME}" \
             --file="buildinformation.json" \
             --server="${env:OCTOPUS_URL}" \
             --apiKey="${env:OCTOPUS_API_KEY}" \
             --space="${env:OCTOPUS_SPACE_NAME}"
-          octo create-release \
+      - name: "Create ${{ matrix.octopus-project }} Octopus Release"
+        uses: docker://octopusdeploy/octo
+        with:
+          args: >
+            octo create-release \
             --project="${env:OCTOPUS_PROJECT_NAME}" \
             --packageVersion="${env:PACKAGE_VERSION}" \
             --releaseNumber="${env:PACKAGE_VERSION}" \
