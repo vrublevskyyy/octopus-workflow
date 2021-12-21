@@ -35,23 +35,12 @@ jobs:
           - "Project2"
           - "Project3"
     steps:
-      # - name: "Create ${{ matrix.octopus-project }} Octopus Release"
-      #   uses: docker://octopusdeploy/octo
-      #   with:
-      #     args: >
-      #       create-release
-      #       --server ${{ secrets.OCTOPUS_SERVER }}
-      #       --project "${{ matrix.octopus-project }}"
-      #       --version ${{ needs.create-gh-release.outputs.release-number }}
-      #       --channel Default
-      #       --apikey ${{ secrets.OCTOPUS_API_KEY }}
-      #       --releasenotes "[View release in GitHub](${{ needs.create-gh-release.outputs.release-url }})"
       - name: Octopus Deploy
+        uses: docker://octopusdeploy/octo
         env:
           OCTOPUS_URL: ${{ secrets.OCTOPUS_SERVER_URL }}
           OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
-        uses: docker://octopusdeploy/octo
-        run: |
+      - run: |
           commitMessage = git log -1 --pretty=oneline
           commitMessage = $commitMessage -replace "${env:GITHUB_SHA} ", ""
           jsonBody = {
