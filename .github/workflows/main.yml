@@ -20,7 +20,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}qwe
+          tag_name: ${{ github.ref }}qweq
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
@@ -43,9 +43,10 @@ jobs:
           OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
           OCTOPUS_SPACE_NAME: "Spaces-1"
       - run: |
+          git log -1 --pretty=oneline
           commitMessage=$(git log -1 --pretty=oneline)
           echo $commitMessage
-          jsonBody = {
+          jsonBody='{
             BuildEnvironment = "GitHub Actions"
             Branch = "${env:BRANCH_NAME}"
             BuildNumber = "${env:GITHUB_RUN_NUMBER}"
@@ -60,7 +61,7 @@ jobs:
                 Comment = $commitMessage
               }
             )
-          }
+          }'
           echo $jsonBody > buildinformation.json
           echo "======================="
           octo build-information --package-id="${env:PACKAGE_NAME}" \
