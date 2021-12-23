@@ -15,6 +15,7 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@master
+      - run: env
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
