@@ -13,6 +13,9 @@ jobs:
         octopus-project:
           - "Project1"
     steps:
+      - name: "Checkout"
+        uses: actions/checkout@master
+      - run: env && echo ${{ github.event.commits[0].message }} && echo ${{ github.event.commits.message }}
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
@@ -37,8 +40,6 @@ jobs:
         env:
           MATRIX_CONTEXT: ${{ toJSON(matrix) }}
         run: echo "$MATRIX_CONTEXT"
-      - name: "Checkout"
-        uses: actions/checkout@master
       - name: Octopus Deploy
         uses: docker://octopusdeploy/octo
         env:
@@ -72,7 +73,7 @@ jobs:
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            build-information --package-id="hello-world.1.0.0.zip.json" --file="hello-world.1.0.0.zip.json" --version="hello-world.1.0.0.zip" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
+            build-information --package-id="hello-world.1.0.1.zip.json" --file="hello-world.1.0.0.zip.json" --version="hello-world.1.0.0.zip" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
       - name: "Create ${{ matrix.octopus-project }} Octopus Release Second"
         uses: docker://octopusdeploy/octo
         with:
