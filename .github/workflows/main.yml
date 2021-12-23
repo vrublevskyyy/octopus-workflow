@@ -15,7 +15,7 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@master
-      - run: env && echo ${{ github.event.commits[0].message }} && ${{ github.event.commits.message }}
+      - run: env && echo ${{ github.event.commits[0].message }} && echo ${{ github.event.commits.message }}
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
