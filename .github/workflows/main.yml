@@ -13,6 +13,8 @@ jobs:
         octopus-project:
           - "Project1"
     steps:
+      - name: "Checkout"
+        uses: actions/checkout@master
       - name: Dump GitHub context
         env:
           GITHUB_CONTEXT: ${{ toJSON(github) }}
@@ -37,8 +39,6 @@ jobs:
         env:
           MATRIX_CONTEXT: ${{ toJSON(matrix) }}
         run: echo "$MATRIX_CONTEXT"
-      - name: "Checkout"
-        uses: actions/checkout@master
       - name: Octopus Deploy
         uses: docker://octopusdeploy/octo
         env:
@@ -64,7 +64,7 @@ jobs:
                 Comment = $commitMessage
               }
             )
-          }' 
+          }'
           echo $jsonBody > hello-world.1.0.0.zip.json
           readlink -f hello-world.1.0.0.zip.json
           echo "======================="
