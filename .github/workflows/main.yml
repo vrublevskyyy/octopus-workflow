@@ -72,7 +72,7 @@ jobs:
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            build-information --package-id="hello-world.1.0.0.zip.jsona" --file="hello-world.1.0.0.zip.json" --version="hello-world.1.0.0.zip" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
+            build-information --package-id="hello-world.1.0.1.zip.json" --file="hello-world.1.0.0.zip.json" --version="hello-world.1.0.0.zip" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
       - name: "Create ${{ matrix.octopus-project }} Octopus Release Second"
         uses: docker://octopusdeploy/octo
         with:
