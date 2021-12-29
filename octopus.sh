@@ -3,9 +3,7 @@
 commitMessage=$(git log -1 --pretty=oneline)
 echo $commitMessage
 commits=$(echo $(git log -n 10 --pretty=format:'{%n  "Id": "%h",%n   "Comment": "%f"%n},' $@ | perl -pe 'BEGIN{print "["}; END{print "]\n"}' |  perl -pe 's/},]/}]/'))
-jsonBody=$(jq -n  \
-          --arg commits "$commits" \
-    '{
+jsonBody=$(jq -nr --arg v "${commits}" '{
         "BuildEnvironment":"BitBucket",
         "Branch":"main",
         "BuildNumber":"288",
@@ -13,12 +11,11 @@ jsonBody=$(jq -n  \
         "VcsType":"Git",
         "VcsRoot":"http://bitbucket.org/octopussamples/petclinic",
         "VcsCommitNumber":"314cf2c3ee916c92a384c2796a6abe332d678e4f",
-        "Commits": $commits
+        "Commits": $v
         }')
-echo $commits
+echo $jsonBody
 echo "========================="
-comma=$(echo $jsonBody | jq -r '.Commits')
-jsonBody=$(jq -n -r  \
+jsonBody=$(jq \
           --arg commits "$comma" \
     '{
         "BuildEnvironment":"BitBucket",
@@ -33,10 +30,11 @@ jsonBody=$(jq -n -r  \
 echo $jsonBody > buildinfo.json
 echo "=========="
 cat buildinfo.json
+echo $jsonBody
 # docker run --rm -v $(pwd):/src  octopusdeploy/octo build-information \
 #        --package-id="PetClinic.web" \
 #        --version="1.0.200802.1002" \
 #        --file=buildinfo.json \
-#        --server=http://95.131.25.55:8080 \
-#        --apiKey=API-CUNPLE38JKPGFKVRQWLXKVNGVO030EW7 \
+#        --server= \
+#        --apiKey= \
 #        --overwrite-mode=OverwriteExisting # DELETE THIS
