@@ -46,12 +46,9 @@ jobs:
       - name: Generate Octopus Deploy build information
         uses: xo-energy/action-octopus-build-information@v1.0.0
         with:
-          octopus_api_key: "${{ secrets.OCTOPUS_API_KEY }}"
-          octopus_server: "${{ secrets.OCTOPUS_SERVER_URL }}"
-          octopus_project: "${{ matrix.octopus-project }}"
-          output_path: octopus
-          push_package_ids: MyProject
-          push_version: ${{ github.ref }}
+          octopus_api_key: ${{ secrets.OCTOPUS_API_KEY }}
+          octopus_server: ${{ secrets.OCTOPUS_SERVER_URL }}
+          octopus_project: ${{ matrix.octopus-project }}
       - name: "Create buildinfo ${{ matrix.octopus-project }}"
         uses: docker://octopusdeploy/octo
         with:
