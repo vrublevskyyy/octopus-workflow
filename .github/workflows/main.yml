@@ -49,6 +49,7 @@ jobs:
           octopus_api_key: ${{ secrets.OCTOPUS_API_KEY }}
           octopus_server: ${{ secrets.OCTOPUS_SERVER_URL }}
           octopus_project: ${{ matrix.octopus-project }}
+          output_path: octopus
       - name: "Create buildinfo ${{ matrix.octopus-project }}"
         uses: docker://octopusdeploy/octo
         with:
