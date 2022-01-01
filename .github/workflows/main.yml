@@ -5,30 +5,6 @@ on:
     branches:
       - master
 jobs:
-  create-gh-release:
-    name: "Create Release"
-    runs-on: ubuntu-latest
-    outputs:
-      release-url: ${{ steps.create_release.outputs.html_url}}
-      release-number: ${{ steps.release-number.outputs.release-number}}
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@master
-      - name: generate release number
-        id: release-number
-        uses: mindbox-moscow/gha-release-number@v1.0.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - name: "Create GitHub Release"
-        id: create_release
-        uses: actions/create-release@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.release-number.outputs.release-number }}
-          release_name: Release ${{ steps.release-number.outputs.release-number }}
-          draft: false
-          prerelease: false
   create-octopus-release:
     name: "Create Octopus Release"
     runs-on: ubuntu-latest
@@ -99,4 +75,4 @@ jobs:
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            octo create-release --project="PetClinic.web" --packageVersion="1.0.200802.1004"  --releaseNumber="12412" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
+            octo create-release --project="PetClinic.web" --packageVersion="1.0.200802.1004"  --releaseNumber="v0.1.2" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
