@@ -43,37 +43,12 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@master
-      - run: env && echo ${{ github.event.commits[0].message }} && echo ${{ github.event.commits.message }}
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJSON(github) }}
-        run: echo "$GITHUB_CONTEXT"
-      - name: Dump job context
-        env:
-          JOB_CONTEXT: ${{ toJSON(job) }}
-        run: echo "$JOB_CONTEXT"
-      - name: Dump steps context
-        env:
-          STEPS_CONTEXT: ${{ toJSON(steps) }}
-        run: echo "$STEPS_CONTEXT"
-      - name: Dump runner context
-        env:
-          RUNNER_CONTEXT: ${{ toJSON(runner) }}
-        run: echo "$RUNNER_CONTEXT"
-      - name: Dump strategy context
-        env:
-          STRATEGY_CONTEXT: ${{ toJSON(strategy) }}
-        run: echo "$STRATEGY_CONTEXT"
-      - name: Dump matrix context
-        env:
-          MATRIX_CONTEXT: ${{ toJSON(matrix) }}
-        run: echo "$MATRIX_CONTEXT"
       - name: Generate Octopus Deploy build information
         uses: xo-energy/action-octopus-build-information@v1.0.0
         with:
-          octopus_api_key: ${{ secrets.OCTOPUS_API_KEY }}
-          octopus_server: ${{ secrets.OCTOPUS_SERVER_URL }}
-          octopus_project: ${{ matrix.octopus-project }}"
+          octopus_api_key: "${{ secrets.OCTOPUS_API_KEY }}"
+          octopus_server: "${{ secrets.OCTOPUS_SERVER_URL }}"
+          octopus_project: "${{ matrix.octopus-project }}"
           output_path: octopus
           push_package_ids: MyProject
           push_version: ${{ github.ref }}
