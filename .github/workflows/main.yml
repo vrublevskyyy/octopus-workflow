@@ -5,6 +5,30 @@ on:
     branches:
       - master
 jobs:
+  create-gh-release:
+    name: "Create Release"
+    runs-on: ubuntu-latest
+    outputs:
+      release-url: ${{ steps.create_release.outputs.html_url}}
+      release-number: ${{ steps.release-number.outputs.release-number}}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@master
+      - name: generate release number
+        id: release-number
+        uses: mindbox-moscow/gha-release-number@v1.0.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Create GitHub Release"
+        id: create_release
+        uses: actions/create-release@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.release-number.outputs.release-number }}
+          release_name: Release ${{ steps.release-number.outputs.release-number }}
+          draft: false
+          prerelease: false
   create-octopus-release:
     name: "Create Octopus Release"
     runs-on: ubuntu-latest
@@ -66,13 +90,13 @@ jobs:
           ttt=${tt/\}\]\"/\}\]}
           echo $ttt | jq .
           echo $ttt > buildinfo.json
-      - name: "Create ${{ matrix.octopus-project }} Octopus Release First"
+      - name: "Create buildinfo ${{ matrix.octopus-project }}"
         uses: docker://octopusdeploy/octo
         with:
           args: >
             build-information --package-id="PetClinic.web" --file="buildinfo.json" --version="1.0.200802.1004" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
-      - name: "Create ${{ matrix.octopus-project }} Octopus Release Second"
+      - name: "Create ${{ matrix.octopus-project }} Octopus Release"
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            octo create-release --project="Project1" --packageVersion="1124"  --releaseNumber="12412" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
+            octo create-release --project="PetClinic.web" --packageVersion="1.0.200802.1004"  --releaseNumber="12412" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
