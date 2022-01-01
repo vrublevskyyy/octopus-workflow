@@ -70,9 +70,9 @@ jobs:
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            build-information --package-id="PetClinic.web" --file="buildinfo.json" --version="1.0.200802.1004" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
+            build-information --package-id="PetClinic.web" --file="buildinfo.json" --version="1.0.200802.1004" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"  --overwrite-mode=OverwriteExisting
       - name: "Create ${{ matrix.octopus-project }} Octopus Release"
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            octo create-release --project="PetClinic.web" --packageVersion="1.0.200802.1004"  --releaseNumber="v0.1.2" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
+            octo create-release --project="PetClinic.web" --packageVersion="1.0.200802.1004"  --releaseNumber="v0.1.2" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"  --overwrite-mode=OverwriteExisting
