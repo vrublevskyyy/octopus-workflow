@@ -50,11 +50,11 @@ jobs:
           octopus_server: ${{ secrets.OCTOPUS_SERVER_URL }}
           octopus_project: ${{ matrix.octopus-project }}
           output_path: octopus
-      - name: "Create buildinfo ${{ matrix.octopus-project }}"
-        uses: docker://octopusdeploy/octo
-        with:
-          args: >
-            build-information --server="${{ secrets.OCTOPUS_SERVER_URL }}" --apiKey="${{ secrets.OCTOPUS_API_KEY }}" --package-id="${{ matrix.octopus-project }}" --file="buildinfo.json" --version="${{ needs.create-gh-release.outputs.release-number }}" --overwrite-mode=OverwriteExisting --space="Spaces-1"
+      # - name: "Create buildinfo ${{ matrix.octopus-project }}"
+      #   uses: docker://octopusdeploy/octo
+      #   with:
+      #     args: >
+      #       build-information --server="${{ secrets.OCTOPUS_SERVER_URL }}" --apiKey="${{ secrets.OCTOPUS_API_KEY }}" --package-id="${{ matrix.octopus-project }}" --file="octopus/buildInformation.json" --version="${{ needs.create-gh-release.outputs.release-number }}" --overwrite-mode=OverwriteExisting --space="Spaces-1"
       - name: "Create ${{ matrix.octopus-project }} Octopus Release"
         uses: docker://octopusdeploy/octo
         with:
