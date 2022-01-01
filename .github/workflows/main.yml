@@ -39,7 +39,7 @@ jobs:
     strategy:
       matrix:
         octopus-project:
-          - "Project1"
+          - "project1"
     steps:
       - name: "Checkout"
         uses: actions/checkout@master
