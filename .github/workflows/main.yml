@@ -101,4 +101,4 @@ jobs:
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            create-release --project="project1" --packageVersion="1.0.200802.1007"  --releaseNumber="v0.1.5" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
+            create-release --project="project1" --packageVersion="1.0.200802.1007"  --releaseNumber="v0.1.5" --version ${{ needs.create-gh-release.outputs.release-number }} --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
