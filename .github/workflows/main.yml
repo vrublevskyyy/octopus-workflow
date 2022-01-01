@@ -64,6 +64,7 @@ jobs:
           clear=$(cat tmp.json | sed 's/\\"/\"/g')
           tt=${clear/\"[{/\[{}
           ttt=${tt/\}\]\"/\}\]}
+          echo $ttt | jq .
           echo $ttt > hello-world.1.0.0.zip.json
       - name: "Create ${{ matrix.octopus-project }} Octopus Release First"
         uses: docker://octopusdeploy/octo
