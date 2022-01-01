@@ -72,34 +72,31 @@ jobs:
           OCTOPUS_SPACE_NAME: "Spaces-1"
       - run: |
           git log -1 --pretty=oneline
-          commitMessage=$(git log -1 --pretty=oneline)
+          commitMessage=$(echo $(git log -n 10 --pretty=format:'{%n  "Id": "%h",%n   "Comment": "%f"%n},' $@ | perl -pe 'BEGIN{print "["}; END{print "]\n"}' |  perl -pe 's/},]/}]/'))
           echo $commitMessage
-          jsonBody='{
-            BuildEnvironment = "GitHub Actions"
-            Branch = "${env:BRANCH_NAME}"
-            BuildNumber = "${env:GITHUB_RUN_NUMBER}"
-            BuildUrl = "https://github.com/${env:GITHUB_REPOSITORY}/actions/runs/${env:GITHUB_RUN_ID}"
-            VcsCommitNumber = "${env:GITHUB_SHA}"
-            VcsType = "Git"
-            VcsRoot = "https://github.com/${env:GITHUB_REPOSITORY}.git"
-            Commits = (
-              {
-                Id = "${env:GITHUB_SHA}"
-                LinkUrl = "https://github.com/${env:GITHUB_REPOSITORY}/commit/${env:GITHUB_SHA}"
-                Comment = $commitMessage
-              }
-            )
-          }'
-          echo $jsonBody > hello-world.1.0.0.zip.json
-          readlink -f hello-world.1.0.0.zip.json
-          echo "======================="
-      - name: "Create ${{ matrix.octopus-project }} Octopus Release First"
+          jsonBody=$(jq -nr --arg v "${commitMessage}" '{
+                    "BuildEnvironment":"BitBucket",
+                    "Branch":"main",
+                    "BuildNumber":"288",
+                    "BuildUrl":"https://bitbucket.org/octopussamples/petclinic/addon/pipelines/home#!/results/288",
+                    "VcsType":"Git",
+                    "VcsRoot":"http://bitbucket.org/octopussamples/petclinic",
+                    "VcsCommitNumber":"314cf2c3ee916c92a384c2796a6abe332d678e4f",
+                    "Commits": $v
+                    }')
+          echo ${jsonBody} > tmp.json
+          clear=$(cat tmp.json | sed 's/\\"/\"/g')
+          tt=${clear/\"[{/\[{}
+          ttt=${tt/\}\]\"/\}\]}
+          echo $ttt | jq .
+          echo $ttt > buildinfo.json
+      - name: "Create buildinfo ${{ matrix.octopus-project }}"
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            build-information --package-id="hello-world.1.0.1.zip.json" --file="hello-world.1.0.0.zip.json" --version="hello-world.1.0.0.zip" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
-      - name: "Create ${{ matrix.octopus-project }} Octopus Release Second"
+            build-information --package-id="project1" --file="buildinfo.json" --version="1.0.200802.1007" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"  --overwrite-mode=OverwriteExisting
+      - name: "Create ${{ matrix.octopus-project }} Octopus Release"
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            octo create-release --project="Project1" --packageVersion="1124"  --releaseNumber="12412" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
+            create-release --project="project1" --packageVersion="1.0.200802.1007"  --releaseNumber="v0.1.5" --server=${{ secrets.OCTOPUS_SERVER_URL }} --apiKey=${{ secrets.OCTOPUS_API_KEY }} --space="Spaces-1"
