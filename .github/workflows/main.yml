@@ -96,9 +96,9 @@ jobs:
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            build-information --package-id="${{ matrix.octopus-project }}" --file="buildinfo.json" --version="${{ needs.create-gh-release.outputs.release-number }}" --server="${{ secrets.OCTOPUS_SERVER_URL }}" --apiKey="${{ secrets.OCTOPUS_API_KEY }}" --overwrite-mode=OverwriteExisting --space="Spaces-1"
+            build-information --server="${{ secrets.OCTOPUS_SERVER_URL }}" --apiKey="${{ secrets.OCTOPUS_API_KEY }}" --package-id="${{ matrix.octopus-project }}" --packageVersion="${{ needs.create-gh-release.outputs.release-number }}" --file="buildinfo.json" --version="${{ needs.create-gh-release.outputs.release-number }}" --overwrite-mode=OverwriteExisting --space="Spaces-1"
       - name: "Create ${{ matrix.octopus-project }} Octopus Release"
         uses: docker://octopusdeploy/octo
         with:
           args: >
-            create-release --server="${{ secrets.OCTOPUS_SERVER_URL }}" --apiKey="${{ secrets.OCTOPUS_API_KEY }}" --project="${{ matrix.octopus-project }}" --packageVersion="${{ needs.create-gh-release.outputs.release-number }}"  --releaseNumber="${{ needs.create-gh-release.outputs.release-number }}" --space="Spaces-1"
+            create-release    --server="${{ secrets.OCTOPUS_SERVER_URL }}" --apiKey="${{ secrets.OCTOPUS_API_KEY }}" --project="${{ matrix.octopus-project }}" --packageVersion="${{ needs.create-gh-release.outputs.release-number }}"  --releaseNumber="${{ needs.create-gh-release.outputs.release-number }}" --space="Spaces-1"
