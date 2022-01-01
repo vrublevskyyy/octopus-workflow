@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+env:
+  release_version: "1.0.0-${{ github.sha }}"
 jobs:
   create-gh-release:
     name: "Create Release"
